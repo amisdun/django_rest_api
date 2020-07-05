@@ -35,10 +35,7 @@ class GetUsers(APIView):
         return Response(serializer.data)
 
 class LoginUser(APIView):
-    authentication_classes = [JWTAuthentication]
-    print(authentication_classes)
     def post(self,request):
-        print(request.user.id)
         user = auth.authenticate(email=request.data.get('email'),password=request.data.get('password'))
 
         if user:
