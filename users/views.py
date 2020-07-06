@@ -88,3 +88,34 @@ class UpdateUserPost(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class DeleteUserPost(APIView):
+    authentication_classes = [JWTAuthentication]
+    def delete(self,request,pk):
+        user = request.user
+        post = user.posts.get(id=pk)
+
+        if post:
+            post.delete()
+
+            return Response({'message':'deleted'}, status=status.HTTP_204_NO_CONTENT)
+        else:
+
+            return Response({'message': 'Post not found'}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+class DeleteAllUserPosts(APIView):
+    authentication_classes = [JWTAuthentication]
+    def delete(self,request):
+        user = request.user
+
+        posts = user.posts.all()
+
+        if len(posts) >= 1:
+            posts.delete()
+
+            return Response({'message':'deleted'}, status=status.HTTP_204_NO_CONTENT)
+
+        else:
+            return Response({'message':'No post available'}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+            

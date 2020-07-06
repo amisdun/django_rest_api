@@ -7,5 +7,7 @@ urlpatterns = [
     path('login/',views.LoginUser.as_view()),
     path('users_post/', views.UserPosts.as_view()),
     path('create_post/', views.AddUserPosts.as_view()),
-    path('update_post/<int:pk>/', views.UpdateUserPost.as_view())
+    path('update_post/<int:pk>/', views.UpdateUserPost.as_view()),
+    path('delete_user_post/<int:pk>/', views.DeleteUserPost.as_view()),
+    path('delete_all_post/', views.DeleteAllUserPosts.as_view())
 ]
