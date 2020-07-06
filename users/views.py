@@ -45,3 +45,15 @@ class LoginUser(APIView):
             return Response({'data':serializer.data['email'], 'token': token}, status=status.HTTP_200_OK)
 
         return Response({'response': 'Invalid credentials'},status=status.HTTP_401_UNAUTHORIZED)
+
+
+class UserPosts(APIView):
+    authentication_classes = [JWTAuthentication]
+    def get(self, request):
+        user = request.user
+        user_posts = user.posts.all()
+        if len(user_posts) >= 1:
+            serializer = PostSerializer(user_posts)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({'message':'No data found'}, status=status.HTTP_404_NOT_FOUND)
