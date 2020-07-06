@@ -53,7 +53,38 @@ class UserPosts(APIView):
         user = request.user
         user_posts = user.posts.all()
         if len(user_posts) >= 1:
-            serializer = PostSerializer(user_posts)
+            serializer = PostSerializer(user_posts, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'message':'No data found'}, status=status.HTTP_404_NOT_FOUND)
+
+class AddUserPosts(APIView):
+    authentication_classes = [JWTAuthentication]
+    def post(self,request):
+        user = request.user
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            user.posts.create(
+                titile=request.data.get("titile"),
+                author=request.data.get("author")
+            )
+
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UpdateUserPost(APIView):
+    authentication_classes = [JWTAuthentication]
+    def put(self,request,pk):
+        user = request.user
+
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            update_post = user.posts.get(id=pk)
+            update_post.titile = request.data.get("titile")
+            update_post.author = request.data.get("author")
+            update_post.save()
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
